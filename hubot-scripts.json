@@ -1,5 +1,7 @@
 [
 	"tweet.coffee",
 	"shipit.coffee",
-	"status.coffee"
+	"status.coffee",
+	"remind.coffee",
+	"isup.coffee"
 ]
