@@ -7,13 +7,13 @@ time = require 'time'
 
 module.exports = (robot) ->
   robot.respond /timeshift/i, (msg) ->
-    florida = new time.Date
-    florida.setTimezone 'US/Eastern'
-    munich  = new time.Date
-    munich.setTimezone 'Europe/Berlin'
+    asia = new time.Date
+    asia.setTimezone 'Asia/Ho_Chi_Minh'
+    germany  = new time.Date
+    germany.setTimezone 'Europe/Berlin'
 
     reply = """
-    It's #{florida.toLocaleTimeString()} in Palm Beach.
-    It's #{munich.toLocaleTimeString()} in Munich.
+    It's #{asia.toLocaleTimeString()} in Thailand and Ho Chi Minh.
+    It's #{germany.toLocaleTimeString()} in Germany.
     """
     msg.send reply
