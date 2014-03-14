@@ -24,14 +24,15 @@
   },
 
   "dependencies": {
-    "hubot":         ">= 2.7.2",
-    "hubot-scripts": ">= 2.5.4",
-    "hubot-hipchat": ">= 2.6.4",
+    "hubot":               ">= 2.7.2",
+    "hubot-scripts":       ">= 2.5.4",
+    "hubot-hipchat":       ">= 2.6.4",
     "coffee-script":      "1.6.3",
     "optparse":           "1.0.4",
     "scoped-http-client": "0.9.8",
     "log":                "1.4.0",
-    "express":            "3.3.4"
+    "express":            "3.3.4",
+    "time":               "~0.10.0"
   },
 
   "engines": {
