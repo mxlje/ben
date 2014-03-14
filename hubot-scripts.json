@@ -7,5 +7,6 @@
   "applause.coffee",
   "facepalm.coffee",
   "yoda-quotes.coffee",
-  "commitmessage.coffee"
+  "commitmessage.coffee",
+  "karma.coffee"
 ]
