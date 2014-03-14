@@ -1,9 +1,11 @@
 [
   "redis-brain.coffee",
+  "asana.coffee",
   "shipit.coffee",
   "remind.coffee",
   "isup.coffee",
   "applause.coffee",
   "facepalm.coffee",
-  "yoda-quotes.coffee"
+  "yoda-quotes.coffee",
+  "commitmessage.coffee"
 ]
