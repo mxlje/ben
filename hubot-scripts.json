@@ -1,6 +1,5 @@
 [
 	"shipit.coffee",
-	"status.coffee",
 	"remind.coffee",
 	"isup.coffee",
   "applause.coffee",
