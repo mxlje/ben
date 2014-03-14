@@ -2,5 +2,7 @@
 	"shipit.coffee",
 	"status.coffee",
 	"remind.coffee",
-	"isup.coffee"
+	"isup.coffee",
+  "applause.coffee",
+  "facepalm.coffee"
 ]
