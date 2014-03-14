@@ -1,5 +1,5 @@
 # Description:
-#   Coconut icon, based on
+#   Coconut pictures, based on
 #   Applause from Orson Welles and others
 #
 # Dependencies:
@@ -9,13 +9,16 @@
 #   None
 #
 # Commands:
-#   coconut - Get applause
+#   coconut - Get coconut image
 #
 # Author:
-#   maxlielje
+#   mxlje
 
 images = [
-  "http://i.imgur.com/wyGu3R4.jpg"
+  "http://i.imgur.com/wyGu3R4.jpg",
+  "http://i.imgur.com/eDVVKXZ.jpg",
+  "http://i.imgur.com/1rbE6Gt.jpg",
+  "http://i.imgur.com/HuQyy1O.jpg"
   ]
 
 
