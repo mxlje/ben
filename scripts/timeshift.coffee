@@ -1,6 +1,10 @@
 # Description:
 #   Responds with the time and date from Palm Beach & Munich.
 #
+# Dependencies:
+#
+#   "time": "*"
+#
 # Commands:
 #   hubot timeshift - Respond with date & time
 time = require 'time'
