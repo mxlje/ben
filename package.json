@@ -32,7 +32,8 @@
     "scoped-http-client": "0.9.8",
     "log":                "1.4.0",
     "express":            "3.3.4",
-    "time":               "~0.10.0"
+    "time":               "~0.10.0",
+    "querystring":        "0.1.0"
   },
 
   "engines": {

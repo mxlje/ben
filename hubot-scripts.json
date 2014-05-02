@@ -8,5 +8,6 @@
   "facepalm.coffee",
   "yoda-quotes.coffee",
   "commitmessage.coffee",
-  "karma.coffee"
+  "karma.coffee",
+  "hipchat-api.coffee"
 ]
