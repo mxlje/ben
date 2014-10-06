@@ -26,7 +26,7 @@
   "dependencies": {
     "hubot":               ">= 2.7.2",
     "hubot-scripts":       ">= 2.5.4",
-    "hubot-hipchat":       ">= 2.6.4",
+    "hubot-kato":    ">= 0.0.7",
     "coffee-script":      "1.6.3",
     "optparse":           "1.0.4",
     "scoped-http-client": "0.9.8",
