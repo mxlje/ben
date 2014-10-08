@@ -1,6 +1,5 @@
 [
   "redis-brain.coffee",
-  "asana.coffee",
   "shipit.coffee",
   "remind.coffee",
   "isup.coffee",
