@@ -13,7 +13,7 @@
 #   HUBOT_ASANA_API_KEY - find this in Account Settings -> API
 # 
 # Commands:
-#   post Asana task URL - get info about task
+#   <Asana task URL> - get info about task
 #
 # Author:
 #   mxlje
