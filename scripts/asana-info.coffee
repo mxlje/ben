@@ -1,7 +1,7 @@
 # Description:
 #   Listens for Asana URLs and provides info about the task.
 #   The message is a markdown formatted string.
-#   The format looks something like this:
+#   The format looks like this:
 # 
 #   > [ ] Task Title (Assignee)
 #   > Lorem ipsum dolor sit amet, I am the description …
@@ -13,13 +13,19 @@
 #   HUBOT_ASANA_API_KEY - find this in Account Settings -> API
 # 
 # Commands:
-#   Simply post an Asana URL that points to a task, eg.
-#   https://app.asana.com/0/12345678901234/12345678901234
+#   post Asana task URL - get info about task
 #
 # Author:
 #   mxlje
 
-api_key = process.env.HUBOT_ASANA_API_KEY
+asana_api_key = process.env.HUBOT_ASANA_API_KEY
+
+# template for response
+response = (task) ->
+  """
+  > **#{task.status} #{task.title} (#{task.assignee})**
+  > #{task.notes}
+  """
 
 module.exports = (robot) ->
   robot.hear /app\.asana\.com\/\d{1}\/\d+\/(\d+)/i, (msg) ->
@@ -27,7 +33,7 @@ module.exports = (robot) ->
     # extract task ID from URL
     task_id = msg.match[1]
     req_uri = "https://app.asana.com/api/1.0/tasks/#{task_id}"
-    auth    = 'Basic ' + new Buffer("#{api_key}:").toString('base64')
+    auth    = 'Basic ' + new Buffer("#{asana_api_key}:").toString('base64')
 
     robot.http(req_uri)
       .header("Authorization", auth)
@@ -45,18 +51,18 @@ module.exports = (robot) ->
         # parse the response body
         data = JSON.parse(body).data
 
-        # prepare some data points based on their existence
-        completed = if data.completed then "[&#10003;]" else "[ ]"
-        assignee  = if data.assignee then "#{data.assignee.name}" else "unassigned"
-
-        response = "> #{completed} **#{data.name}** (#{assignee})"
+        # extract and reformat data from response
+        task =
+          title:    data.name
+          status:   if data.completed then "[&#10003;]" else "[ ]"
+          assignee: if data.assignee then "#{data.assignee.name}" else "unassigned"
 
         # clip notes at first paragraph
         if data.notes.length > 0
           split = data.notes.split("\n")
-          notes = if split.length > 1 then "#{split[0]} …" else data.notes
-          
-          response = response + "\n> #{notes}"
-        
+          task.notes = if split.length > 1 then "#{split[0]} …" else data.notes
+        else
+          task.notes = "(no description)"
+
         # send the finished markdown down the pipe
-        msg.send response
+        msg.send response(task)
