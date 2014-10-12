@@ -1,6 +1,6 @@
 {
   "name":        "hosted-hubot",
-  "version":     "2.7.2",
+  "version":     "2.8.2",
 
   "author":      "GitHub Inc.",
 
@@ -20,11 +20,11 @@
 
   "repository" : {
     "type": "git",
-    "url":  "https://github.com/mxlje/ben-the-bot.git"
+    "url":  "https://github.com/mxlje/ben.git"
   },
 
   "dependencies": {
-    "hubot":               ">= 2.7.2",
+    "hubot":               "2.8.2",
     "hubot-scripts":       ">= 2.5.4",
     "hubot-kato":    ">= 0.0.7",
     "coffee-script":      "1.6.3",
