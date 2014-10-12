@@ -6,5 +6,6 @@
   "facepalm.coffee",
   "yoda-quotes.coffee",
   "commitmessage.coffee",
-  "karma.coffee"
+  "karma.coffee",
+  "base64.coffee"
 ]
