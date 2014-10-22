@@ -37,6 +37,9 @@ project_template = (project) ->
   > #{project.notes}
   """
 
+report_error = (msg, err) ->
+  msg.send "Something went wrong: #{err}"
+
 
 get_task = (task_id, robot, msg) ->
   robot.http(asana_task_endpoint task_id)
@@ -45,7 +48,7 @@ get_task = (task_id, robot, msg) ->
 
       # Check for general networking errors
       if err
-        msg.send "Something went wrong: #{err}"
+        report_error msg, err
         return
 
       # If Asana returns 403 Forbidden it is possible that the URL belongs to
@@ -87,7 +90,7 @@ get_project = (project_id, robot, msg) ->
     .get() (err, res, body) ->
 
       if err
-        msg.send "Something went wrong: #{err}"
+        report_error msg, err
         return
 
       if res.statusCode != 200
