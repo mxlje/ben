@@ -17,6 +17,23 @@
 asana_api_key     = process.env.HUBOT_ASANA_API_KEY
 asana_auth_header = 'Basic ' + new Buffer("#{asana_api_key}:").toString('base64')
 
+# Listen for Asana deeplinks
+module.exports = (robot) ->
+  robot.hear /app\.asana\.com\/\d{1}\/\d+\/(\d+)/i, (msg) ->
+    id = msg.match[1]
+
+    # Check for a task first
+    get_task id, robot, msg, (task) ->
+      if task.statusCode == 403
+        # on 403 status check for project
+        get_project id, robot, msg, (project) ->
+          msg.send project_template(project)
+
+      else
+        msg.send task_template(task)
+
+
+
 # Helpers for Asana endpoint URLs
 asana_task_endpoint = (task_id) ->
   "https://app.asana.com/api/1.0/tasks/#{task_id}"
@@ -24,24 +41,52 @@ asana_task_endpoint = (task_id) ->
 asana_project_endpoint = (project_id) ->
   "https://app.asana.com/api/1.0/projects/#{project_id}"
 
-# (Markdown) templates for responses based on response type
-task_template = (task) ->
-  """
-  > **#{task.status} #{task.title} (#{task.assignee})**
-  > #{task.notes}
-  """
-
-project_template = (project) ->
-  """
-  > **#{project.name} (#{project.workspace})**
-  > #{project.notes}
-  """
-
 report_error = (msg, err) ->
   msg.send "Something went wrong: #{err}"
 
+report_invalid_request = (msg, res, body) ->
+  msg.send "Asana returned HTTP #{res.statusCode}: #{JSON.parse(body).errors[0].message}"
 
-get_task = (task_id, robot, msg) ->
+
+
+# (Markdown) templates for responses for a task ir project
+task_template = (task) ->
+  t =
+    code:     task.statusCode
+    title:    task.name
+    status:   if task.completed then "[&#10003;]" else "[ ]"
+    assignee: if task.assignee then "#{task.assignee.name}" else "unassigned"
+
+  if task.notes.length > 0
+    split = task.notes.split("\n")
+    t.notes = if split.length > 1 then "#{split[0]} …" else task.notes
+  else
+    t.notes = "(no description)"
+
+  """
+  > **#{t.status} #{t.title} (#{t.assignee})**
+  > #{t.notes}
+  """
+
+project_template = (project) ->
+  p =
+    name:      project.name
+    workspace: project.workspace.name
+
+  if project.notes.length > 0
+    split = project.notes.split("\n")
+    p.notes = if split.length > 1 then "#{split[0]} …" else project.notes
+  else
+    p.notes = "(no description)"
+
+  """
+  > **#{p.name} (#{p.workspace})**
+  > #{p.notes}
+  """
+
+
+
+get_task = (task_id, robot, msg, cb) ->
   robot.http(asana_task_endpoint task_id)
     .header("Authorization", asana_auth_header)
     .get() (err, res, body) ->
@@ -52,39 +97,23 @@ get_task = (task_id, robot, msg) ->
         return
 
       # If Asana returns 403 Forbidden it is possible that the URL belongs to
-      # a project instead of a task. We’ll ask Asana again and return
+      # a project instead of a task. We call back with a task object containing
+      # the 403 status so the callback can start a new query
+      task = {}
       if res.statusCode == 403
-        get_project task_id, robot, msg
+        task.statusCode = 403
+        cb task
         return
 
-      # The request made to Asana was invalid
       if res.statusCode != 200
-        msg.send "Asana returned HTTP #{res.statusCode}: #{JSON.parse(body).errors[0].message}"
+        report_invalid_request msg, res, body
         return
 
       # parse the response body
-      data = JSON.parse(body).data
+      task = JSON.parse(body).data
+      cb task
 
-      # extract and reformat data from response
-      task =
-        title:    data.name
-        status:   if data.completed then "[&#10003;]" else "[ ]"
-        assignee: if data.assignee then "#{data.assignee.name}" else "unassigned"
-
-      # clip notes at first paragraph
-      if data.notes.length > 0
-        split = data.notes.split("\n")
-        task.notes = if split.length > 1 then "#{split[0]} …" else data.notes
-      else
-        task.notes = "(no description)"
-
-      # send the finished markdown down the pipe
-      msg.send task_template(task)
-
-
-# This is pretty much the exact same code as for tasks but with a
-# different endpoint and a different response template
-get_project = (project_id, robot, msg) ->
+get_project = (project_id, robot, msg, cb) ->
   robot.http(asana_project_endpoint project_id)
     .header("Authorization", asana_auth_header)
     .get() (err, res, body) ->
@@ -94,31 +123,8 @@ get_project = (project_id, robot, msg) ->
         return
 
       if res.statusCode != 200
-        msg.send "Asana returned HTTP #{res.statusCode}: #{JSON.parse(body).errors[0].message}"
+        report_invalid_request msg, res, body
         return
 
-      data = JSON.parse(body).data
-
-      project =
-        name:      data.name
-        workspace: data.workspace.name
-
-      if data.notes.length > 0
-        split = data.notes.split("\n")
-        project.notes = if split.length > 1 then "#{split[0]} …" else data.notes
-      else
-        project.notes = "(no description)"
-
-      msg.send project_template(project)
-
-
-# Listen for Asana deeplinks
-module.exports = (robot) ->
-  robot.hear /app\.asana\.com\/\d{1}\/\d+\/(\d+)/i, (msg) ->
-
-    # extract task ID from URL
-    task_id = msg.match[1]
-    req_uri = asana_task_endpoint task_id
-
-    # Query Asana API
-    get_task task_id, robot, msg
+      project = JSON.parse(body).data
+      cb project
