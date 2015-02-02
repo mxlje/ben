@@ -19,7 +19,7 @@ asana_auth_header = 'Basic ' + new Buffer("#{asana_api_key}:").toString('base64'
 
 # Listen for Asana deeplinks
 module.exports = (robot) ->
-  robot.hear /app\.asana\.com\/\d{1}\/\d+\/(\d+)/i, (msg) ->
+  robot.hear /app\.asana\.com\/\d{1}\/[inbox\/]*\d+\/(\d+)/i, (msg) ->
     id = msg.match[1]
 
     # Check for a task first
