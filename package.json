@@ -16,7 +16,7 @@
 
   "dependencies": {
     "hubot":              "2.9.0",
-    "hubot-kato":         "0.0.8",
+    "hubot-kato":         "0.1.0",
     "coffee-script":      "1.6.3",
     "optparse":           "1.0.4",
     "scoped-http-client": "0.9.8",
